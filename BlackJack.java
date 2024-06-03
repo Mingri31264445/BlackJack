@@ -1,12 +1,4 @@
-//到底在難什麼我要瘋了  2024/6/2 am 01:06
-//隨機抽卡搞定 2024/6/2 am 02:23
-//強迫開始的迴圈完成了 2024/6/2 am 02:40
-//終於搞定有戲開始抽2張牌 2024/6/2 am 03:05
-//搞定要牌系統，終於可以睡了 2024/6/2 am 03:45
-//打完註解 2024/6/2 am 03:55
-
-/*明天:加上莊家和對戰績分系統 */
-
+//我好累我真的好累
 import java.util.Scanner;
 
 //牌組
@@ -46,14 +38,14 @@ class Card{
             point -= 3;
         }
 
-        //當點數>21時用來結束88行的do-while
+        //當點數>21時用來結束121行的do-while迴圈
         if (point > 21) {
             System.out.println("點數超過21,遊戲結束!");
             gameOver = true;
         }
     }
 }
-
+//玩家
 class Player extends Card{
 
     //開始遊戲時自動抽兩張牌
@@ -68,43 +60,104 @@ class Player extends Card{
     }
 }
 
+//莊家
+class Dealer extends Player {//莊家後來加的，我懶得把show移上去Card，直接繼承Player
+    void play() {
+        while (point < 17 && !gameOver) {//<17無腦抽
+            askForCard();
+        }
+        show();
+    }
+}
+
 public class BlackJack {
     //主程式
     public static void main(String[] args){
         Scanner sc = new Scanner(System.in);
         
-        Player player = new Player(); 
+        //建立物件
+        Player player = new Player();
+        Dealer dealer = new Dealer();
+
 
         //強迫開始的迴圈
         int open;
         do{
         System.out.println("是否開始21點遊戲!(要:1,不要:2)");
-        open = sc.nextInt();
-            if(open ==1)
-                player.Licensing();
-            else if(open ==2)
+        //使用 while 迴圈檢查輸入是否為整數
+            while (!sc.hasNextInt()) {
+                System.out.println("輸入錯誤,請輸入1或2:");
+                sc.next(); //這可以清除無效的輸入
+            }
+
+            open = sc.nextInt();
+
+            if(open ==1){
+                System.out.println("玩家的回合:");
+                player.Licensing();//呼叫開局方法
+
+
+                int get;//在do-while外宣告while中才可以使用
+                do{
+                System.out.println("請問要再來一張牌嗎? (要:1,不要:2)");
+                    //同87行
+                    while (!sc.hasNextInt()) {
+                        System.out.println("輸入錯誤,請輸入1或2:");
+                        sc.next();
+                    }
+
+                get = sc.nextInt();
+        
+                if(get == 1){
+                    player.askForCard();
+                    player.show();
+                }
+                else if (get == 2) {
+                    System.out.println("遊戲結束，最終點數是: " + player.point);
+                }
+                else{
+                    System.out.println("輸入錯誤,請輸入1或2:");
+                }
+                }while (get !=2 && !player.gameOver);//爆牌自動結束
+
+                if (!player.gameOver) {
+                    System.out.println("");
+                    System.out.println("莊家的回合:");
+                    dealer.play();
+                }
+
+                //判斷輸贏
+                if (player.gameOver) {
+                    System.out.println("");
+                    System.out.println("玩家爆牌，莊家勝利!");
+                }
+                else if (dealer.gameOver) {
+                    System.out.println("");
+                    System.out.println("莊家爆牌，玩家勝利!");
+                }
+                else {
+                    if (player.point > dealer.point) {
+                        System.out.println("");
+                        System.out.println("玩家勝利!");
+                    }
+                    else if (player.point < dealer.point) {
+                        System.out.println("");
+                        System.out.println("莊家勝利!");
+                    }
+                    else{
+                        System.out.println("");
+                        System.out.println("平局!");
+                    }
+                }
+            }
+            else if(open ==2){
                 System.out.println("真的不玩嗎?");
-            else
-                System.out.println("輸入錯誤，請重試");
+            }
+            else{
+                System.out.println("輸入錯誤,請輸入1或2:");
+            }
         }while(open !=1);
 
-        //重複要牌
-        int get;
-        do{
-        System.out.println("請問要再來一張牌嗎? (要:1,不要:2)");
-        get = sc.nextInt();
-
-        if(get == 1){
-            player.askForCard();
-            player.show();
-        }
-        else if (get == 2) {
-            System.out.println("遊戲結束，最終點數是: " + player.point);
-        }
-        else{
-            System.out.println("輸入錯誤，請重試");
-        }
-        }while (get !=2 && !player.gameOver);
 
         sc.close();//聽說在主程式的最後放這行sc不會有問題，原理我不知道:)
     }
