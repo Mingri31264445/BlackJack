@@ -85,7 +85,14 @@ public class BlackJack {
         Scanner sc = new Scanner(System.in);
         
         //建立物件
-        Player player = new Player();
+
+        System.out.println("請輸入遊玩人數:");
+        while (!sc.hasNextInt()) {
+            System.out.println("輸入錯誤,請輸入數字:");
+            sc.next(); //這可以清除無效的輸入
+        }
+        int numOfPlayers = sc.nextInt();
+        Player[] player = new Player[numOfPlayers];
         Dealer dealer = new Dealer();
 
 
@@ -102,13 +109,17 @@ public class BlackJack {
             open = sc.nextInt();
 
             if(open ==1){
-                System.out.println("玩家的回合:");
-                player.Licensing();//呼叫開局方法
-
                 dealer.showOneCard();//莊家顯示其中一張牌
+            for(int i=0;i<player.length;i++){
+                System.out.println();
+                System.out.println("玩家"+(i+1)+"的回合:");
+                player[i] = new Player();
+                player[i].Licensing();//呼叫開局方法
+
 
                 int get;//在do-while外宣告while中才可以使用
                 do{
+                System.out.println("");
                 System.out.println("請問要再來一張牌嗎? (要:1,不要:2)");
                     //同87行
                     while (!sc.hasNextInt()) {
@@ -119,38 +130,40 @@ public class BlackJack {
                 get = sc.nextInt();
         
                 if(get == 1){
-                    player.askForCard();
-                    player.show();
+                    System.out.print("玩家"+(i+1));
+                    player[i].askForCard();
+                    player[i].show();
                 }
                 else if (get == 2) {
-                    System.out.println("遊戲結束，最終點數是: " + player.point);
+                    System.out.println("遊戲結束，最終點數是: " + player[i].point);
                 }
                 else{
                     System.out.println("輸入錯誤,請輸入1或2:");
                 }
-                }while (get !=2 && !player.gameOver);//爆牌自動結束
+                }while (get !=2 && !player[i].gameOver);//爆牌自動結束
 
-                if (!player.gameOver) {
-                    System.out.println("");
-                    System.out.println("莊家的回合:");
-                    dealer.play();
                 }
 
+                        System.out.println("");
+                        System.out.println("莊家的回合:");
+                        dealer.play();
+
+                for(int j=0;j<player.length;j++){
                 //判斷輸贏
-                if (player.gameOver) {
+                if (player[j].gameOver) {
                     System.out.println("");
-                    System.out.println("玩家爆牌，莊家勝利!");
+                    System.out.println("玩家"+(j+1)+"爆牌，莊家勝利!");
                 }
                 else if (dealer.gameOver) {
                     System.out.println("");
-                    System.out.println("莊家爆牌，玩家勝利!");
+                    System.out.println("莊家爆牌，玩家"+(j+1)+"勝利!");
                 }
                 else {
-                    if (player.point > dealer.point) {
+                    if (player[j].point > dealer.point) {
                         System.out.println("");
-                        System.out.println("玩家勝利!");
+                        System.out.println("玩家"+(j+1)+"勝利!");
                     }
-                    else if (player.point < dealer.point) {
+                    else if (player[j].point < dealer.point) {
                         System.out.println("");
                         System.out.println("莊家勝利!");
                     }
@@ -159,6 +172,7 @@ public class BlackJack {
                         System.out.println("平局!");
                     }
                 }
+            }
             }
             else if(open ==2){
                 System.out.println("真的不玩嗎?");
