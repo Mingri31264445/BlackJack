@@ -62,13 +62,11 @@ class Player extends Card{
 
 //莊家
 class Dealer extends Player {//莊家後來加的，我懶得把show移上去Card，直接繼承Player
-    private String revealedCard;
 
     // 顯示第一張牌的方法
     void showOneCard() {
+        System.out.print("莊家");
         askForCard(); // 抽取第一張牌
-        revealedCard = suits[(int) (Math.random() * 4)] + ranks[(int) (Math.random() * 13)];
-        System.out.println("莊家的其中一張牌是: " + revealedCard);
         System.out.print("目前已知莊家");
         show();
     }
