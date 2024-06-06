@@ -56,12 +56,23 @@ class Player extends Card{
     }
 
     void show(){
-        System.out.println("總計的點數是:"+point);
+        System.out.println("總計的點數是: "+point);
     }
 }
 
 //莊家
 class Dealer extends Player {//莊家後來加的，我懶得把show移上去Card，直接繼承Player
+    private String revealedCard;
+
+    // 顯示第一張牌的方法
+    void showOneCard() {
+        askForCard(); // 抽取第一張牌
+        revealedCard = suits[(int) (Math.random() * 4)] + ranks[(int) (Math.random() * 13)];
+        System.out.println("莊家的其中一張牌是: " + revealedCard);
+        System.out.print("目前已知莊家");
+        show();
+    }
+
     void play() {
         while (point < 17 && !gameOver) {//<17無腦抽
             askForCard();
@@ -96,6 +107,7 @@ public class BlackJack {
                 System.out.println("玩家的回合:");
                 player.Licensing();//呼叫開局方法
 
+                dealer.showOneCard();//莊家顯示其中一張牌
 
                 int get;//在do-while外宣告while中才可以使用
                 do{
